@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0a;
+  --color-surface: #111111;
+  --color-surface2: #1a1a1a;
+  --color-border: #222222;
+  --color-border2: #2a2a2a;
+  --color-text: #e5e5e5;
+  --color-text2: #a3a3a3;
+  --color-text3: #737373;
+  --color-accent: #00ff9d;
+  --color-accent2: #00cc7d;
+  
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Inter", sans-serif;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Skills graph — active edge flow animation */
+@keyframes sg-dash {
+  to { stroke-dashoffset: -26; }
+}
+
+/* Floating inspector slide-in */
+@keyframes inspector-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hide scrollbar on category strip */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Skills inspector slide-in class */
+.sg-inspector {
+  animation: inspector-in 0.18s ease both;
+}
+
+/* Skills graph active edge base */
+.sg-edge-active {
+  stroke-dasharray: 6 4;
+  animation: sg-dash 0.45s linear infinite;
+}
