@@ -898,11 +898,14 @@ function ProjectInspector({ projectNode, skillNodes, onClose }) {
     [projectNode.id, skillNodes]
   )
 
+  // Raw source data (mission or experiment object)
+  const raw = projectNode.raw ?? {}
+
   // Flatten tech stack (missions have nested stack object, labs have flat technologies array)
   const technologies = useMemo(() => {
-    const raw = projectNode.raw ?? {}
-    if (!projectNode.isMission) return raw.technologies ?? []
-    const s = raw.stack ?? {}
+    const r = projectNode.raw ?? {}
+    if (!projectNode.isMission) return r.technologies ?? []
+    const s = r.stack ?? {}
     return [...new Set([
       ...(s.frontend ?? []),
       ...(s.backend ?? []),
