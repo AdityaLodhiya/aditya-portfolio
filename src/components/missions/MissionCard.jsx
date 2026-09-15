@@ -41,13 +41,13 @@ export default function MissionCard({ mission }) {
                 {mission.stack.slice(0, 4).map((tech, index) => (
                   <span
                     key={index}
-                    className="px-2.5 py-1 border border-border2 bg-surface2 font-mono text-[11px] sm:text-xs text-text3"
+                    className="px-2.5 py-1.5 sm:py-1 border border-border2 bg-surface2 font-mono text-xs text-text3"
                   >
                     {tech}
                   </span>
                 ))}
                 {mission.stack.length > 4 && (
-                  <span className="px-2.5 py-1 border border-border2 bg-surface2 font-mono text-[11px] sm:text-xs text-text3">
+                  <span className="px-2.5 py-1.5 sm:py-1 border border-border2 bg-surface2 font-mono text-xs text-text3">
                     +{mission.stack.length - 4}
                   </span>
                 )}
@@ -57,13 +57,13 @@ export default function MissionCard({ mission }) {
                 {Object.values(mission.stack).flat().slice(0, 4).map((tech, index) => (
                   <span
                     key={index}
-                    className="px-2.5 py-1 border border-border2 bg-surface2 font-mono text-[11px] sm:text-xs text-text3"
+                    className="px-2.5 py-1.5 sm:py-1 border border-border2 bg-surface2 font-mono text-xs text-text3"
                   >
                     {tech}
                   </span>
                 ))}
                 {Object.values(mission.stack).flat().length > 4 && (
-                  <span className="px-2.5 py-1 border border-border2 bg-surface2 font-mono text-[11px] sm:text-xs text-text3">
+                  <span className="px-2.5 py-1.5 sm:py-1 border border-border2 bg-surface2 font-mono text-xs text-text3">
                     +{Object.values(mission.stack).flat().length - 4}
                   </span>
                 )}

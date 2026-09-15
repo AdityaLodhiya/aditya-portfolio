@@ -283,16 +283,28 @@ export default function SkillGraph({
       (width - PAD * 2) / (graphW + PAD * 2),
       (height - PAD * 2) / (graphH + PAD * 2),
     )
-    // Allow zooming as far out as needed to fit mobile screens comfortably
-    const minScale = isMobile ? 0.22 : 0.45
-    const scale = Math.max(Math.min(rawScale, 1.0), minScale)
-    const gcx = (minX + maxX) / 2
-    const gcy = (minY + maxY) / 2
-    setVp({
-      scale,
-      x: width / 2 - gcx * scale,
-      y: height / 2 - gcy * scale,
-    })
+
+    if (isMobile) {
+      // On mobile: start zoomed in at the center of the graph at a readable scale.
+      // Users can pinch-zoom out to see all nodes.
+      const gcx = (minX + maxX) / 2
+      const gcy = (minY + maxY) / 2
+      const mobileScale = Math.max(rawScale * 2.2, 0.38) // Start 2x+ zoomed vs fit-all
+      setVp({
+        scale: Math.min(mobileScale, 0.65),
+        x: width / 2 - gcx * Math.min(mobileScale, 0.65),
+        y: height / 2 - gcy * Math.min(mobileScale, 0.65),
+      })
+    } else {
+      const scale = Math.max(Math.min(rawScale, 1.0), 0.45)
+      const gcx = (minX + maxX) / 2
+      const gcy = (minY + maxY) / 2
+      setVp({
+        scale,
+        x: width / 2 - gcx * scale,
+        y: height / 2 - gcy * scale,
+      })
+    }
   }, [nodeBounds])
 
   // Run once after the DOM is ready and nodeBounds is available
@@ -540,6 +552,12 @@ export default function SkillGraph({
         className="relative flex-1 overflow-hidden"
         style={{ background: '#0a0a0a' }}
       >
+        {/* Mobile hint — pinch to zoom */}
+        <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+          <span className="font-mono text-[10px] text-text3/70 tracking-widest bg-surface/80 px-3 py-1 rounded-full border border-border">
+            PINCH TO ZOOM · DRAG TO PAN
+          </span>
+        </div>
         {/* Dot grid */}
         <svg
           aria-hidden

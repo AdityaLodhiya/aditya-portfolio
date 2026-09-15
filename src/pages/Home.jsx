@@ -48,17 +48,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(rgba(34,34,34,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,34,34,0.03)_1px,transparent_1px)] bg-[size:64px_64px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-16 lg:py-24">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-12 sm:mb-16"
+          className="mb-6 sm:mb-14"
         >
           <div className="flex items-center gap-2.5 mb-4 sm:mb-6">
             <StatusIndicator status="online" size="sm" />
-            <span className="font-mono text-xs text-text2 uppercase tracking-wider">System Online</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-7xl font-bold text-text mb-4 sm:mb-6 tracking-tight">

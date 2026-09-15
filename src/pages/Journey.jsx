@@ -37,16 +37,14 @@ export default function Journey() {
           <div>
             {timeline.map((entry, i) => {
               const isCurrent = i === timeline.length - 1
-              const tech = Array.isArray(entry.technologies)
-                ? entry.technologies.join(' · ')
-                : null
+              const techs = Array.isArray(entry.technologies) ? entry.technologies : []
               const resolvedProjects = (entry.projects || []).map(getProjectBySlug).filter(Boolean)
               return (
                 <Entry
                   key={entry.version ?? i}
                   phase={entry.period}
                   label={entry.title}
-                  tech={tech}
+                  techs={techs}
                   body={entry.description}
                   projects={resolvedProjects}
                   isCurrent={isCurrent}
@@ -86,7 +84,7 @@ export default function Journey() {
 }
 
 // ── Entry ─────────────────────────────────────────────────────────────────
-function Entry({ phase, label, tech, body, projects, isCurrent }) {
+function Entry({ phase, label, techs, body, projects, isCurrent }) {
   return (
     <div className="relative flex gap-4 sm:gap-8 pb-8 last:pb-0">
 
@@ -121,13 +119,22 @@ function Entry({ phase, label, tech, body, projects, isCurrent }) {
           {label}
         </div>
 
-        {/* Tech stack */}
-        {tech && (
-          <div
-            className="font-mono text-[10px] tracking-wide mb-3 leading-relaxed"
-            style={{ color: isCurrent ? '#00ff9d' : '#666' }}
-          >
-            {tech}
+        {/* Tech stack — pill tags that wrap cleanly on mobile */}
+        {techs && techs.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {techs.map((t) => (
+              <span
+                key={t}
+                className="font-mono text-[9px] px-1.5 py-0.5 border rounded-sm whitespace-nowrap"
+                style={{
+                  borderColor: isCurrent ? 'rgba(0,255,157,0.3)' : '#2a2a2a',
+                  color: isCurrent ? '#00ff9d' : '#666',
+                  background: isCurrent ? 'rgba(0,255,157,0.04)' : 'transparent',
+                }}
+              >
+                {t}
+              </span>
+            ))}
           </div>
         )}
 

@@ -68,10 +68,10 @@ export default function ExperimentCard({ experiment }) {
             
             <div className="mt-auto">
               <h3 className="font-mono text-[9px] text-text3 tracking-widest uppercase mb-2">Technologies</h3>
-              <div className="flex flex-wrap gap-x-2 gap-y-1">
-                {experiment.technologies.map((tech, idx) => (
-                  <span key={tech} className="font-mono text-[10px] text-text2">
-                    {tech}{idx < experiment.technologies.length - 1 && <span className="text-text3 ml-2">·</span>}
+              <div className="flex flex-wrap gap-1.5">
+                {experiment.technologies.map((tech) => (
+                  <span key={tech} className="font-mono text-[10px] text-text2 px-2 py-0.5 border border-border2 bg-surface2 rounded-sm whitespace-nowrap">
+                    {tech}
                   </span>
                 ))}
               </div>
