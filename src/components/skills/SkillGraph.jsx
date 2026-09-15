@@ -550,11 +550,11 @@ export default function SkillGraph({
       <div
         ref={containerRef}
         className="relative flex-1 overflow-hidden"
-        style={{ background: '#050508' }}
+        style={{ background: '#07090e' }}
       >
         {/* Mobile hint — pinch to zoom */}
         <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <span className="font-mono text-[10px] text-text3/70 tracking-widest bg-surface/80 px-3 py-1 rounded-full border border-border">
+          <span className="font-mono text-[10px] text-text2 tracking-widest bg-surface/90 px-3 py-1 rounded-full border border-border/80 backdrop-blur-sm shadow-sm">
             PINCH TO ZOOM · DRAG TO PAN
           </span>
         </div>
@@ -562,11 +562,11 @@ export default function SkillGraph({
         <svg
           aria-hidden
           className="absolute inset-0 pointer-events-none"
-          style={{ width: '100%', height: '100%', opacity: 0.25 }}
+          style={{ width: '100%', height: '100%', opacity: 0.35 }}
         >
           <defs>
             <pattern id="sg-dots" width="24" height="24" patternUnits="userSpaceOnUse">
-              <circle cx="0.8" cy="0.8" r="0.8" fill="#3a3a3a" />
+              <circle cx="1" cy="1" r="0.9" fill="#253248" />
             </pattern>
           </defs>
           <rect width="100%" height="100%" fill="url(#sg-dots)" />
@@ -594,26 +594,26 @@ export default function SkillGraph({
               const isDirectConnection = activeNode &&
                 (e.src.id === activeNode.id || e.tgt.id === activeNode.id)
 
-              let edgeStroke = '#222222'
-              let edgeWidth = 0.8
-              let edgeOpacity = 0.12 // Default: very subtle
+              let edgeStroke = '#2a374d'
+              let edgeWidth = 0.9
+              let edgeOpacity = 0.25 // Default: clean, visible circuit traces
 
               if (activeNode) {
                 if (isDirectConnection) {
                   if (hovered && hovered.id === activeNode.id) {
                     // Hover state: moderately visible
                     edgeStroke = '#00cc7d'
-                    edgeOpacity = 0.6
-                    edgeWidth = 1.2
+                    edgeOpacity = 0.75
+                    edgeWidth = 1.4
                   } else {
-                    // Selected state: bright green
+                    // Selected state: bright glowing green
                     edgeStroke = '#00ff9d'
-                    edgeOpacity = 0.95
-                    edgeWidth = 1.8
+                    edgeOpacity = 1
+                    edgeWidth = 2
                   }
                 } else {
-                  // Unrelated edges during interaction: almost invisible
-                  edgeOpacity = 0.02
+                  // Unrelated edges during interaction: dimmed
+                  edgeOpacity = 0.04
                 }
               }
 
@@ -635,29 +635,24 @@ export default function SkillGraph({
               const isActiveNode = activeNode?.id === node.id
               const isSelected = node.id === selectedId
               const highlighted = !activeNode || connectedIds?.has(node.id)
-              const opacity = highlighted ? 1 : 0.18  // dimmed nodes slightly more visible
+              const opacity = highlighted ? 1 : 0.22
 
-              // ── PROJECT NODE ────────────────────────────────────────────
+              // ── PROJECT NODE (Missions & Labs) ──────────────────────────
               if (node.type === 'project') {
-                // AMOLED: solid dark-green fill, vivid border, bright text
                 const fill = isActiveNode
-                  ? '#0d2e1a'           // active: clear dark green surface
+                  ? '#133e25'           // active: rich vibrant emerald surface
                   : isSelected
-                    ? '#0b2416'
-                    : '#0a1e12'         // rest: visible dark green (not black)
+                    ? '#113520'
+                    : '#0e2619'         // rest: clearly distinct dark emerald card
                 const border = isActiveNode
-                  ? '#00ff9d'           // active: full brightness green
+                  ? '#00ff9d'           // active: full neon mint
                   : isSelected
                     ? '#00e888'
-                    : (highlighted && activeNode) ? '#00cc7d'
-                      : '#1f7a46'       // rest: vivid mid-green border
-                const labelText = isActiveNode || isSelected || (highlighted && activeNode)
-                  ? '#00ff9d'
-                  : '#2db866'          // rest: clearly visible green label
-                const nameText = isActiveNode || isSelected || (highlighted && activeNode)
-                  ? '#ffffff'
-                  : '#d0d8d0'          // rest: near-white, clearly readable
-                const dotFill = isActiveNode || isSelected ? '#00ff9d' : '#1f7a46'
+                    : (highlighted && activeNode) ? '#00e588'
+                      : '#10b981'       // rest: vivid crisp emerald border
+                const labelText = '#00ff9d' // always bright neon mint for crystal clarity
+                const nameText = '#ffffff'  // crisp pure white title
+                const dotFill = isActiveNode || isSelected ? '#00ff9d' : '#10b981'
 
                 return (
                   <g
@@ -674,30 +669,30 @@ export default function SkillGraph({
                   >
                     <rect
                       x={node.x - PW / 2} y={node.y - PH / 2}
-                      width={PW} height={PH} rx={2}
+                      width={PW} height={PH} rx={4}
                       fill={fill}
                       stroke={border}
-                      strokeWidth={isActiveNode || isSelected ? 2 : 1.2}
+                      strokeWidth={isActiveNode || isSelected ? 2 : 1.4}
                     />
                     <text
-                      x={node.x} y={node.y - 12}
-                      textAnchor="middle" fontSize={7}
-                      fontFamily="JetBrains Mono, monospace"
+                      x={node.x} y={node.y - 11}
+                      textAnchor="middle" fontSize={8}
+                      fontFamily="JetBrains Mono, monospace" fontWeight="600"
                       fill={labelText} letterSpacing="1.2"
                     >
                       {node.label}
                     </text>
                     <text
-                      x={node.x} y={node.y + 7}
-                      textAnchor="middle" fontSize={10}
+                      x={node.x} y={node.y + 8}
+                      textAnchor="middle" fontSize={10.5}
                       fontFamily="Inter, sans-serif" fontWeight="600"
                       fill={nameText}
                     >
                       {node.name.length > 16 ? node.name.slice(0, 15) + '…' : node.name}
                     </text>
                     <circle
-                      cx={node.x + PW / 2 - 7} cy={node.y - PH / 2 + 7}
-                      r={3}
+                      cx={node.x + PW / 2 - 8} cy={node.y - PH / 2 + 8}
+                      r={3.5}
                       fill={dotFill}
                     />
                   </g>
@@ -705,23 +700,22 @@ export default function SkillGraph({
               }
 
               // ── SKILL NODE ──────────────────────────────────────────────
-              // AMOLED: solid dark-blue fill, vivid border, bright text
               const fill = isActiveNode
-                ? '#0d1a2e'             // active: clear dark blue surface
-                : '#0a1020'            // rest: visible dark blue (not pure black)
+                ? '#152d52'             // active: clear deep sapphire surface
+                : isSelected
+                  ? '#132847'
+                  : '#0d1d36'           // rest: clearly distinct dark sapphire card
               const border = isActiveNode
-                ? '#00ff9d'             // active: accent green highlight
+                ? '#00ff9d'             // active: neon mint highlight
                 : isSelected || (highlighted && activeNode)
-                  ? '#5588ff'           // highlighted: vivid blue
-                  : '#2d4477'           // rest: clear mid-blue border
-              const nameText = isActiveNode || isSelected || (highlighted && activeNode)
-                ? '#ffffff'
-                : '#c8d4e8'            // rest: light blue-white, clearly readable
+                  ? '#38bdf8'           // highlighted: vivid electric cyan
+                  : '#3b82f6'           // rest: vivid tech cobalt blue border
+              const nameText = '#ffffff' // crisp pure white title for perfect readability
               const subText = isActiveNode
                 ? '#00ff9d'
                 : highlighted && activeNode
-                  ? '#5588ff'
-                  : '#7088aa'          // rest: clear cool-blue subtext
+                  ? '#38bdf8'
+                  : '#7dd3fc'          // rest: bright readable sky-blue subtext
 
               return (
                 <g
@@ -738,14 +732,14 @@ export default function SkillGraph({
                 >
                   <rect
                     x={node.x - SW / 2} y={node.y - SH / 2}
-                    width={SW} height={SH} rx={2}
+                    width={SW} height={SH} rx={4}
                     fill={fill}
                     stroke={border}
-                    strokeWidth={isActiveNode ? 2 : 1.2}
+                    strokeWidth={isActiveNode || isSelected ? 2 : 1.3}
                   />
                   <text
-                    x={node.x} y={node.y - 5}
-                    textAnchor="middle" fontSize={10}
+                    x={node.x} y={node.y - 4}
+                    textAnchor="middle" fontSize={10.5}
                     fontFamily="Inter, sans-serif" fontWeight="600"
                     fill={nameText}
                   >
@@ -753,8 +747,8 @@ export default function SkillGraph({
                   </text>
                   <text
                     x={node.x} y={node.y + 12}
-                    textAnchor="middle" fontSize={7.5}
-                    fontFamily="JetBrains Mono, monospace"
+                    textAnchor="middle" fontSize={8}
+                    fontFamily="JetBrains Mono, monospace" fontWeight="500"
                     fill={subText} letterSpacing="0.8"
                   >
                     {node.abbr} · {node.projects.length}
@@ -796,23 +790,23 @@ export default function SkillGraph({
         {/* ── Legend (bottom-right, hidden on very small screens or when inspector open) ────────── */}
         {!inspectorOpen && (
           <div
-            className="hidden sm:flex absolute bottom-5 right-5 items-center gap-5 px-3 py-2 border border-border"
-            style={{ background: 'rgba(10,10,10,0.92)' }}
+            className="hidden sm:flex absolute bottom-5 right-5 items-center gap-5 px-3.5 py-2 border border-border/80 rounded-sm"
+            style={{ background: 'rgba(10,14,22,0.95)' }}
           >
-            {/* SKILL – cool blue-gray */}
-            <div className="flex items-center gap-1.5">
-              <div style={{ width: 14, height: 10, border: '1px solid #2a3040', borderRadius: 1, background: 'rgba(12,14,20,1)' }} />
-              <span className="font-mono text-[8px]" style={{ color: '#4a5060' }}>SKILL</span>
+            {/* SKILL – vibrant cyan/blue */}
+            <div className="flex items-center gap-2">
+              <div style={{ width: 14, height: 10, border: '1.5px solid #38bdf8', borderRadius: 2, background: '#0d1d36' }} />
+              <span className="font-mono text-[9px] font-semibold" style={{ color: '#7dd3fc' }}>SKILL</span>
             </div>
-            {/* PROJECT – subtle green */}
-            <div className="flex items-center gap-1.5">
-              <div style={{ width: 18, height: 13, border: '1px solid #1e4a30', borderRadius: 1, background: 'rgba(10,20,14,1)' }} />
-              <span className="font-mono text-[8px]" style={{ color: '#2d6b4a' }}>PROJECT</span>
+            {/* PROJECT – vibrant emerald */}
+            <div className="flex items-center gap-2">
+              <div style={{ width: 16, height: 12, border: '1.5px solid #10b981', borderRadius: 2, background: '#0e2619' }} />
+              <span className="font-mono text-[9px] font-semibold" style={{ color: '#00ff9d' }}>PROJECT</span>
             </div>
-            {/* ACTIVE – bright green */}
-            <div className="flex items-center gap-1.5">
-              <div style={{ width: 28, height: 2, background: '#00ff9d', borderRadius: 1, opacity: 0.9 }} />
-              <span className="font-mono text-[8px]" style={{ color: '#00ff9d' }}>ACTIVE</span>
+            {/* ACTIVE – neon mint glow */}
+            <div className="flex items-center gap-2">
+              <div style={{ width: 22, height: 3, background: '#00ff9d', borderRadius: 1.5, boxShadow: '0 0 8px rgba(0,255,157,0.6)' }} />
+              <span className="font-mono text-[9px] font-semibold" style={{ color: '#00ff9d' }}>ACTIVE</span>
             </div>
           </div>
         )}
