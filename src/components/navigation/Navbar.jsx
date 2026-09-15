@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
 
   const navItems = [
-    { path: '/missions', label: 'MISSIONS', num: '01' },
-    { path: '/skills', label: 'SKILLS', num: '02' },
-    { path: '/lab', label: 'LAB', num: '03' },
-    { path: '/journey', label: 'JOURNEY', num: '04' },
-    { path: '/thinking', label: 'THINKING', num: '05' },
-    { path: '/contact', label: 'CONTACT', num: '06' },
+    { path: '/missions', label: 'MISSIONS' },
+    { path: '/skills', label: 'SKILLS' },
+    { path: '/lab', label: 'LAB' },
+    { path: '/journey', label: 'JOURNEY' },
+    { path: '/thinking', label: 'THINKING' },
+    { path: '/contact', label: 'CONTACT' },
   ]
 
   // Auto-close mobile menu on route change
@@ -20,24 +20,12 @@ export default function Navbar() {
     setIsOpen(false)
   }, [location.pathname])
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-surface/95 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b border-border bg-[#111111]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 py-2">
+          <Link to="/" className="flex items-center gap-2 py-2">
             <span className="font-mono text-text text-xs sm:text-sm font-semibold tracking-wider">
               ADITYA <span className="text-accent">//</span> SYSTEM
             </span>
@@ -64,10 +52,10 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Mobile Menu Button - 44x44 minimum touch target */}
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden w-11 h-11 flex items-center justify-center text-text2 hover:text-text rounded-md focus:outline-none focus:ring-1 focus:ring-accent"
+            className="md:hidden p-2 text-text2 hover:text-text focus:outline-none transition-colors"
             aria-label="Toggle menu"
             aria-expanded={isOpen}
           >
@@ -76,13 +64,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Drawer & Backdrop */}
+      {/* Mobile Navigation Dropdown */}
       {isOpen && (
-        <div className="md:hidden fixed inset-x-0 top-14 sm:top-16 bottom-0 z-50 flex flex-col bg-background/95 backdrop-blur-xl border-t border-border animate-in fade-in duration-200">
-          <div className="px-4 py-4 space-y-1 overflow-y-auto flex-1">
-            <div className="text-[10px] font-mono tracking-widest text-text3 uppercase px-3 py-2">
-              System Modules
-            </div>
+        <div className="md:hidden border-t border-border bg-[#111111] shadow-2xl">
+          <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path
               return (
@@ -90,33 +75,25 @@ export default function Navbar() {
                   key={item.path}
                   to={item.path}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center justify-between px-3.5 py-3 rounded border font-mono text-sm transition-all duration-150 ${
+                  className={`flex items-center justify-between px-3 py-2.5 rounded font-mono text-xs sm:text-sm transition-colors ${
                     isActive
-                      ? 'bg-surface2 border-accent/40 text-accent font-medium'
-                      : 'border-transparent text-text2 hover:text-text hover:bg-surface'
+                      ? 'bg-[#1a1a1a] text-accent font-medium border-l-2 border-accent'
+                      : 'text-text2 hover:text-text hover:bg-[#1a1a1a]'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`text-xs ${isActive ? 'text-accent' : 'text-text3'}`}>
-                      {item.num}
-                    </span>
-                    <span>{item.label}</span>
-                  </div>
-                  <ArrowRight
-                    size={16}
-                    className={isActive ? 'text-accent' : 'text-text3 opacity-40'}
-                  />
+                  <span>{item.label}</span>
+                  {isActive && (
+                    <span className="text-[10px] text-accent font-mono tracking-wider">[ACTIVE]</span>
+                  )}
                 </Link>
               )
             })}
 
-            {/* Quick Status Bar inside drawer */}
-            <div className="pt-4 mt-4 border-t border-border px-3.5 flex items-center justify-between">
+            <div className="flex items-center justify-between px-3 pt-3 mt-2 border-t border-border">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-                <span className="font-mono text-xs text-text2">CORE SYSTEMS ONLINE</span>
+                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                <span className="font-mono text-xs text-text2">ONLINE</span>
               </div>
-              <span className="font-mono text-[10px] text-text3">v2.4.0</span>
             </div>
           </div>
         </div>
