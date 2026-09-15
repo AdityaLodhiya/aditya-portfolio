@@ -639,22 +639,22 @@ export default function SkillGraph({
 
               // ── PROJECT NODE ────────────────────────────────────────────
               if (node.type === 'project') {
-                // Default: subtle green border to signal "project = anchor"
+                // Brighter colors for AMOLED visibility
                 const borderCol = isActiveNode
                   ? '#00ff9d'
-                  : (highlighted && activeNode) ? '#00cc7d'
-                    : isSelected ? '#00cc7d'
-                      : '#1e4a30'   // restrained dark green border
+                  : (highlighted && activeNode) ? '#00e888'
+                    : isSelected ? '#00e888'
+                      : '#1a6640'   // visible green border at rest
                 const labelCol = isActiveNode || (highlighted && activeNode)
                   ? '#00ff9d'
-                  : isSelected ? '#00cc7d'
-                    : '#2d6b4a'   // muted green for MISSION/LAB metadata
+                  : isSelected ? '#00e888'
+                    : '#3d9966'   // readable green for MISSION/LAB label at rest
                 const nameCol = isActiveNode || (highlighted && activeNode) || isSelected
-                  ? '#d0d0d0' : '#848484'  // slightly brighter than skills at rest
-                const dotCol = isActiveNode || isSelected ? '#00ff9d' : '#1e4a30'
-                const fillCol = isActiveNode ? 'rgba(0,255,157,0.07)'
-                  : isSelected ? 'rgba(0,255,157,0.04)'
-                    : 'rgba(10,20,14,1)'    // very subtle green tint on bg
+                  ? '#ffffff' : '#b0b0b0'  // much brighter text at rest
+                const dotCol = isActiveNode || isSelected ? '#00ff9d' : '#2d8855'
+                const fillCol = isActiveNode ? 'rgba(0,255,157,0.12)'
+                  : isSelected ? 'rgba(0,255,157,0.08)'
+                    : 'rgba(10,22,16,1)'    // slightly more visible green tint
                 return (
                   <g
                     key={node.id}
@@ -701,17 +701,17 @@ export default function SkillGraph({
               }
 
               // ── SKILL NODE ──────────────────────────────────────────────
-              // Cool blue-gray identity to contrast with project green
+              // Brighter colors for AMOLED visibility
               const borderCol = isActiveNode
                 ? '#00ff9d'
-                : (isSelected || (highlighted && activeNode)) ? '#4a8fff'
-                  : '#2a3040'   // cool dark blue-gray border at rest
+                : (isSelected || (highlighted && activeNode)) ? '#6699ff'
+                  : '#3a4a66'   // brighter blue-gray border at rest
               const nameFill = isActiveNode || isSelected || (highlighted && activeNode)
-                ? '#e0e0e0' : '#606878'   // slightly cool-tinted text at rest
+                ? '#ffffff' : '#8899aa'   // bright white when active, readable gray at rest
               const subFill = isActiveNode
                 ? '#00ff9d'
-                : (highlighted && activeNode) ? '#4a8fff'
-                  : '#3a4050'   // cool blue-gray for category metadata
+                : (highlighted && activeNode) ? '#6699ff'
+                  : '#556077'   // readable cool-blue subtext at rest
 
               return (
                 <g
@@ -729,9 +729,9 @@ export default function SkillGraph({
                   <rect
                     x={node.x - SW / 2} y={node.y - SH / 2}
                     width={SW} height={SH} rx={2}
-                    fill={isActiveNode ? 'rgba(0,255,157,0.06)' : 'rgba(12,14,20,1)'}
+                    fill={isActiveNode ? 'rgba(0,255,157,0.10)' : 'rgba(14,17,28,1)'}
                     stroke={borderCol}
-                    strokeWidth={isActiveNode ? 1.5 : 0.8}
+                    strokeWidth={isActiveNode ? 1.5 : 1.0}
                   />
                   <text
                     x={node.x} y={node.y - 5}
@@ -841,8 +841,8 @@ function SkillInspector({ skillNode, projectNodes, onClose }) {
 
   return (
     <div
-      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[78vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
-      style={{ background: 'rgba(10,10,10,0.98)' }}
+      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[48vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-2xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
+      style={{ background: 'rgba(8,10,14,0.99)' }}
       onClick={e => e.stopPropagation()}
     >
       {/* Mobile drag handle */}
@@ -920,8 +920,8 @@ function ProjectInspector({ projectNode, skillNodes, onClose }) {
 
   return (
     <div
-      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[78vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
-      style={{ background: 'rgba(10,10,10,0.98)' }}
+      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[48vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-2xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
+      style={{ background: 'rgba(8,10,14,0.99)' }}
       onClick={e => e.stopPropagation()}
     >
       {/* Mobile drag handle */}
