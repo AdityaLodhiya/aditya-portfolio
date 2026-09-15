@@ -550,7 +550,7 @@ export default function SkillGraph({
       <div
         ref={containerRef}
         className="relative flex-1 overflow-hidden"
-        style={{ background: '#0a0a0a' }}
+        style={{ background: '#050508' }}
       >
         {/* Mobile hint — pinch to zoom */}
         <div className="md:hidden absolute bottom-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
@@ -635,26 +635,30 @@ export default function SkillGraph({
               const isActiveNode = activeNode?.id === node.id
               const isSelected = node.id === selectedId
               const highlighted = !activeNode || connectedIds?.has(node.id)
-              const opacity = highlighted ? 1 : 0.12
+              const opacity = highlighted ? 1 : 0.18  // dimmed nodes slightly more visible
 
               // ── PROJECT NODE ────────────────────────────────────────────
               if (node.type === 'project') {
-                // Brighter colors for AMOLED visibility
-                const borderCol = isActiveNode
+                // AMOLED: solid dark-green fill, vivid border, bright text
+                const fill = isActiveNode
+                  ? '#0d2e1a'           // active: clear dark green surface
+                  : isSelected
+                    ? '#0b2416'
+                    : '#0a1e12'         // rest: visible dark green (not black)
+                const border = isActiveNode
+                  ? '#00ff9d'           // active: full brightness green
+                  : isSelected
+                    ? '#00e888'
+                    : (highlighted && activeNode) ? '#00cc7d'
+                      : '#1f7a46'       // rest: vivid mid-green border
+                const labelText = isActiveNode || isSelected || (highlighted && activeNode)
                   ? '#00ff9d'
-                  : (highlighted && activeNode) ? '#00e888'
-                    : isSelected ? '#00e888'
-                      : '#1a6640'   // visible green border at rest
-                const labelCol = isActiveNode || (highlighted && activeNode)
-                  ? '#00ff9d'
-                  : isSelected ? '#00e888'
-                    : '#3d9966'   // readable green for MISSION/LAB label at rest
-                const nameCol = isActiveNode || (highlighted && activeNode) || isSelected
-                  ? '#ffffff' : '#b0b0b0'  // much brighter text at rest
-                const dotCol = isActiveNode || isSelected ? '#00ff9d' : '#2d8855'
-                const fillCol = isActiveNode ? 'rgba(0,255,157,0.12)'
-                  : isSelected ? 'rgba(0,255,157,0.08)'
-                    : 'rgba(10,22,16,1)'    // slightly more visible green tint
+                  : '#2db866'          // rest: clearly visible green label
+                const nameText = isActiveNode || isSelected || (highlighted && activeNode)
+                  ? '#ffffff'
+                  : '#d0d8d0'          // rest: near-white, clearly readable
+                const dotFill = isActiveNode || isSelected ? '#00ff9d' : '#1f7a46'
+
                 return (
                   <g
                     key={node.id}
@@ -671,47 +675,53 @@ export default function SkillGraph({
                     <rect
                       x={node.x - PW / 2} y={node.y - PH / 2}
                       width={PW} height={PH} rx={2}
-                      fill={fillCol}
-                      stroke={borderCol}
-                      strokeWidth={isActiveNode || isSelected ? 1.5 : 1}
+                      fill={fill}
+                      stroke={border}
+                      strokeWidth={isActiveNode || isSelected ? 2 : 1.2}
                     />
                     <text
                       x={node.x} y={node.y - 12}
                       textAnchor="middle" fontSize={7}
                       fontFamily="JetBrains Mono, monospace"
-                      fill={labelCol} letterSpacing="1.2"
+                      fill={labelText} letterSpacing="1.2"
                     >
                       {node.label}
                     </text>
                     <text
                       x={node.x} y={node.y + 7}
                       textAnchor="middle" fontSize={10}
-                      fontFamily="Inter, sans-serif" fontWeight="500"
-                      fill={nameCol}
+                      fontFamily="Inter, sans-serif" fontWeight="600"
+                      fill={nameText}
                     >
                       {node.name.length > 16 ? node.name.slice(0, 15) + '…' : node.name}
                     </text>
                     <circle
                       cx={node.x + PW / 2 - 7} cy={node.y - PH / 2 + 7}
                       r={3}
-                      fill={dotCol}
+                      fill={dotFill}
                     />
                   </g>
                 )
               }
 
               // ── SKILL NODE ──────────────────────────────────────────────
-              // Brighter colors for AMOLED visibility
-              const borderCol = isActiveNode
+              // AMOLED: solid dark-blue fill, vivid border, bright text
+              const fill = isActiveNode
+                ? '#0d1a2e'             // active: clear dark blue surface
+                : '#0a1020'            // rest: visible dark blue (not pure black)
+              const border = isActiveNode
+                ? '#00ff9d'             // active: accent green highlight
+                : isSelected || (highlighted && activeNode)
+                  ? '#5588ff'           // highlighted: vivid blue
+                  : '#2d4477'           // rest: clear mid-blue border
+              const nameText = isActiveNode || isSelected || (highlighted && activeNode)
+                ? '#ffffff'
+                : '#c8d4e8'            // rest: light blue-white, clearly readable
+              const subText = isActiveNode
                 ? '#00ff9d'
-                : (isSelected || (highlighted && activeNode)) ? '#6699ff'
-                  : '#3a4a66'   // brighter blue-gray border at rest
-              const nameFill = isActiveNode || isSelected || (highlighted && activeNode)
-                ? '#ffffff' : '#8899aa'   // bright white when active, readable gray at rest
-              const subFill = isActiveNode
-                ? '#00ff9d'
-                : (highlighted && activeNode) ? '#6699ff'
-                  : '#556077'   // readable cool-blue subtext at rest
+                : highlighted && activeNode
+                  ? '#5588ff'
+                  : '#7088aa'          // rest: clear cool-blue subtext
 
               return (
                 <g
@@ -729,15 +739,15 @@ export default function SkillGraph({
                   <rect
                     x={node.x - SW / 2} y={node.y - SH / 2}
                     width={SW} height={SH} rx={2}
-                    fill={isActiveNode ? 'rgba(0,255,157,0.10)' : 'rgba(14,17,28,1)'}
-                    stroke={borderCol}
-                    strokeWidth={isActiveNode ? 1.5 : 1.0}
+                    fill={fill}
+                    stroke={border}
+                    strokeWidth={isActiveNode ? 2 : 1.2}
                   />
                   <text
                     x={node.x} y={node.y - 5}
                     textAnchor="middle" fontSize={10}
-                    fontFamily="Inter, sans-serif" fontWeight="500"
-                    fill={nameFill}
+                    fontFamily="Inter, sans-serif" fontWeight="600"
+                    fill={nameText}
                   >
                     {node.name.length > 12 ? node.name.slice(0, 11) + '…' : node.name}
                   </text>
@@ -745,7 +755,7 @@ export default function SkillGraph({
                     x={node.x} y={node.y + 12}
                     textAnchor="middle" fontSize={7.5}
                     fontFamily="JetBrains Mono, monospace"
-                    fill={subFill} letterSpacing="0.8"
+                    fill={subText} letterSpacing="0.8"
                   >
                     {node.abbr} · {node.projects.length}
                   </text>
