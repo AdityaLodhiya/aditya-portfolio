@@ -7,7 +7,7 @@ import { Terminal } from 'lucide-react'
 export default function Lab() {
   return (
     <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24">
         
         {/* Header */}
         <motion.div
@@ -28,10 +28,10 @@ export default function Lab() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full mt-12"
+            className="w-full mt-8 sm:mt-12"
           >
             {/* Dashed Engineering Workspace Empty State */}
-            <div className="border border-dashed border-[#333] bg-[#0a0a0a] p-12 md:p-20 relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+            <div className="border border-dashed border-[#333] bg-[#0a0a0a] p-6 sm:p-12 md:p-20 relative overflow-hidden flex flex-col items-center justify-center min-h-[320px] sm:min-h-[400px]">
               
               {/* Corner Accents */}
               <div className="absolute top-0 left-0 w-4 h-4 border-t border-l border-[#444]" />

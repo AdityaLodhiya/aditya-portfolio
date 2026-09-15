@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 export default function Journey() {
   return (
     <div className="min-h-screen">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24">
 
         <SectionHeader
           number={4}
@@ -24,7 +24,7 @@ export default function Journey() {
         />
 
         {/* Timeline */}
-        <div className="relative mt-14">
+        <div className="relative mt-8 sm:mt-14">
 
           {/* Spine */}
           <div
@@ -58,17 +58,17 @@ export default function Journey() {
 
         {/* Failures / Lessons */}
         {failures.length > 0 && (
-          <div className="mt-20 pt-12 border-t border-[#181818]">
-            <div className="font-mono text-[10px] tracking-[0.18em] text-[#555] uppercase mb-8">
+          <div className="mt-14 sm:mt-20 pt-8 sm:pt-12 border-t border-[#181818]">
+            <div className="font-mono text-[10px] tracking-[0.18em] text-[#555] uppercase mb-6 sm:mb-8">
               WHAT WENT WRONG
             </div>
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {failures.map((f) => (
-                <div key={f.id} className="border-l border-[#2a2a2a] pl-5">
-                  <div className="font-mono text-[11px] tracking-widest text-[#a3a3a3] uppercase mb-2">
+                <div key={f.id} className="border-l border-[#2a2a2a] pl-4 sm:pl-5">
+                  <div className="font-mono text-[11px] tracking-widest text-[#a3a3a3] uppercase mb-1.5 sm:mb-2">
                     {f.title}
                   </div>
-                  <p className="text-sm text-[#666] leading-relaxed mb-2">
+                  <p className="text-xs sm:text-sm text-[#777] leading-relaxed mb-2">
                     {f.reason}
                   </p>
                   <p className="font-mono text-[10px] text-[#4a9e78] leading-relaxed">
@@ -88,7 +88,7 @@ export default function Journey() {
 // ── Entry ─────────────────────────────────────────────────────────────────
 function Entry({ phase, label, tech, body, projects, isCurrent }) {
   return (
-    <div className="relative flex gap-8 pb-8 last:pb-0">
+    <div className="relative flex gap-4 sm:gap-8 pb-8 last:pb-0">
 
       {/* Dot on the spine */}
       <div
@@ -103,7 +103,7 @@ function Entry({ phase, label, tech, body, projects, isCurrent }) {
       />
 
       {/* Content — indented from the spine */}
-      <div className="pl-8 flex-1 min-w-0">
+      <div className="pl-5 sm:pl-8 flex-1 min-w-0">
 
         {/* Phase */}
         <div

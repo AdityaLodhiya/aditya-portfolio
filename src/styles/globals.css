@@ -56,6 +56,20 @@ body {
   animation: inspector-in 0.18s ease both;
 }
 
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-sheet-up {
+  animation: sheet-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Touch optimization */
+button, a, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Skills graph active edge base */
 .sg-edge-active {
   stroke-dasharray: 6 4;

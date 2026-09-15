@@ -48,7 +48,7 @@ const CURRENTLY = [
 export default function Thinking() {
   return (
     <div className="min-h-screen">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24">
 
         {/* Header */}
         <SectionHeader
@@ -58,17 +58,17 @@ export default function Thinking() {
         />
 
         {/* Principles */}
-        <div className="mt-16 space-y-12">
+        <div className="mt-10 sm:mt-16 space-y-8 sm:space-y-12">
           {PRINCIPLES.map((p) => (
             <div key={p.num} className="group">
-              <div className="flex items-baseline gap-4 mb-3">
-                <span className="font-mono text-sm text-[#737373]">{p.num}</span>
-                <h3 className="font-mono text-sm font-semibold tracking-widest text-[#e5e5e5] uppercase">
+              <div className="flex items-baseline gap-3 sm:gap-4 mb-2 sm:mb-3">
+                <span className="font-mono text-xs sm:text-sm text-accent">{p.num}</span>
+                <h3 className="font-mono text-xs sm:text-sm font-semibold tracking-widest text-[#e5e5e5] uppercase">
                   {p.title}
                 </h3>
               </div>
 
-              <div className="border-t border-[#222] mb-4 group-hover:border-[#333] transition-colors" />
+              <div className="border-t border-[#222] mb-3 sm:mb-4 group-hover:border-[#333] transition-colors" />
 
               <p className="text-[#a3a3a3] text-sm leading-relaxed max-w-[500px]">
                 {p.body}
@@ -78,17 +78,19 @@ export default function Thinking() {
         </div>
 
         {/* Currently Thinking About */}
-        <div className="mt-24 pt-12 border-t border-[#111]">
-          <h3 className="font-mono text-xs tracking-widest text-[#737373] uppercase mb-6">
+        <div className="mt-14 sm:mt-24 pt-8 sm:pt-12 border-t border-[#111]">
+          <h3 className="font-mono text-xs tracking-widest text-[#737373] uppercase mb-4 sm:mb-6">
             CURRENTLY THINKING ABOUT
           </h3>
 
-          <div className="space-y-3 font-mono text-xs">
+          <div className="space-y-2 sm:space-y-3 font-mono text-xs">
             {CURRENTLY.map((item) => (
-              <div key={item.topic} className="flex">
-                <span className="text-[#a3a3a3] w-[110px] sm:w-[130px] shrink-0">{item.topic}</span>
-                <span className="text-[#444] mr-4 shrink-0">→</span>
-                <span className="text-[#00ff9d] opacity-80">{item.value}</span>
+              <div key={item.topic} className="flex flex-col sm:flex-row sm:items-center py-1 sm:py-0">
+                <span className="text-[#a3a3a3] w-[110px] sm:w-[130px] shrink-0 font-medium">{item.topic}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[#444] hidden sm:inline mr-2">→</span>
+                  <span className="text-[#00ff9d] opacity-90">{item.value}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -96,8 +98,8 @@ export default function Thinking() {
 
         {/* Articles — from data/thinking/index.js */}
         {articles.length > 0 && (
-          <div className="mt-24 pt-12 border-t border-[#111]">
-            <h3 className="font-mono text-xs tracking-widest text-[#737373] uppercase mb-10">
+          <div className="mt-14 sm:mt-24 pt-8 sm:pt-12 border-t border-[#111]">
+            <h3 className="font-mono text-xs tracking-widest text-[#737373] uppercase mb-6 sm:mb-10">
               NOTES
             </h3>
 

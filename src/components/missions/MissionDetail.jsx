@@ -49,17 +49,17 @@ export default function MissionDetail({ mission }) {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-16">
         {/* Back Navigation */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
           <Link
             to="/missions"
-            className="inline-flex items-center gap-2 text-text2 hover:text-text transition-colors font-mono text-sm"
+            className="inline-flex items-center gap-2 text-text2 hover:text-text transition-colors font-mono text-xs sm:text-sm py-1.5"
           >
             <span>←</span>
             <span>BACK TO MISSIONS</span>
@@ -71,26 +71,26 @@ export default function MissionDetail({ mission }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mb-12"
+          className="mb-8 sm:mb-12"
         >
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-3 sm:mb-4">
             <StatusIndicator status={mission.status} size="md" />
             <span className={`font-mono text-xs uppercase tracking-wider ${getStatusColor(mission.status)}`}>
               {mission.status.replace('_', ' ')}
             </span>
           </div>
 
-          <div className="flex items-center gap-4 mb-4">
-            <span className="font-mono text-accent text-2xl font-bold">
+          <div className="flex items-center gap-4 mb-2 sm:mb-3">
+            <span className="font-mono text-accent text-lg sm:text-2xl font-bold">
               MISSION #{mission.missionNumber}
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold text-text mb-4">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-text mb-3 sm:mb-4 tracking-tight break-words">
             {mission.title}
           </h1>
 
-          <p className="font-mono text-sm text-text2 uppercase tracking-wider">
+          <p className="font-mono text-xs sm:text-sm text-text2 uppercase tracking-wider">
             {mission.type}
           </p>
         </motion.div>
@@ -100,7 +100,7 @@ export default function MissionDetail({ mission }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
-          className="border border-border bg-surface p-8 mb-12"
+          className="border border-border bg-surface p-4 sm:p-6 md:p-8 mb-8 sm:mb-12"
         >
           <div className="space-y-0">
             <MetadataRow label="STATUS" value={mission.status.replace('_', ' ').toUpperCase()} />
@@ -114,12 +114,12 @@ export default function MissionDetail({ mission }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="border-l-4 border-accent bg-surface2 p-6 mb-12"
+            className="border-l-2 sm:border-l-4 border-accent bg-surface2 p-4 sm:p-6 mb-8 sm:mb-12"
           >
-            <h4 className="font-mono text-sm text-accent font-bold tracking-wider mb-2">
+            <h4 className="font-mono text-xs sm:text-sm text-accent font-bold tracking-wider mb-2">
               MY CONTRIBUTION
             </h4>
-            <p className="text-text2 text-base leading-relaxed">
+            <p className="text-text2 text-sm sm:text-base leading-relaxed">
               {mission.contribution}
             </p>
           </motion.div>
@@ -277,15 +277,15 @@ export default function MissionDetail({ mission }) {
             <h4 className="font-mono text-sm text-accent font-bold tracking-wider mb-4 border-b border-border pb-2">
               LINKS
             </h4>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
               {mission.github && (
                 <a
                   href={mission.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 border border-accent bg-surface hover:bg-surface2 transition-colors font-mono text-sm text-accent"
+                  className="w-full sm:w-auto text-center px-6 py-3 border border-accent bg-surface hover:bg-surface2 transition-colors font-mono text-sm text-accent"
                 >
-                  GITHUB
+                  GITHUB ↗
                 </a>
               )}
               {mission.demo && (
@@ -293,9 +293,9 @@ export default function MissionDetail({ mission }) {
                   href={mission.demo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3 border border-accent bg-surface hover:bg-surface2 transition-colors font-mono text-sm text-accent"
+                  className="w-full sm:w-auto text-center px-6 py-3 border border-accent bg-surface hover:bg-surface2 transition-colors font-mono text-sm text-accent"
                 >
-                  LIVE DEMO
+                  LIVE DEMO ↗
                 </a>
               )}
             </div>

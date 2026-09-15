@@ -34,14 +34,14 @@ export default function ExperimentCard({ experiment }) {
   return (
     <article className="border border-border bg-surface relative overflow-hidden transition-colors hover:border-border2 flex flex-col group">
       {/* Header bar */}
-      <div className={`flex flex-wrap items-center justify-between gap-4 px-5 py-2.5 border-b border-border ${statusBg}`}>
-        <div className="flex items-center gap-3">
+      <div className={`flex flex-wrap items-center justify-between gap-2 sm:gap-4 px-4 sm:px-5 py-2.5 border-b border-border ${statusBg}`}>
+        <div className="flex items-center gap-2 sm:gap-3">
           <Beaker size={14} className={statusColor} />
-          <span className="font-mono text-[11px] text-text2 tracking-widest uppercase">{experiment.id}</span>
+          <span className="font-mono text-[10px] sm:text-[11px] text-text2 tracking-widest uppercase">{experiment.id}</span>
           {experiment.date && (
             <>
               <span className="font-mono text-[10px] text-text3">|</span>
-              <span className="font-mono text-[10px] text-text2 tracking-widest">{experiment.date}</span>
+              <span className="font-mono text-[9px] sm:text-[10px] text-text2 tracking-widest">{experiment.date}</span>
             </>
           )}
         </div>
@@ -51,7 +51,7 @@ export default function ExperimentCard({ experiment }) {
       </div>
 
       {/* Main Content Grid */}
-      <div className="flex-1 p-5 md:p-6">
+      <div className="flex-1 p-4 sm:p-5 md:p-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-6">
           
           {/* Left Column: Identity & Summary */}
@@ -59,10 +59,10 @@ export default function ExperimentCard({ experiment }) {
             <div className="font-mono text-[10px] text-accent tracking-widest uppercase mb-1.5">
               {experiment.category}
             </div>
-            <h2 className="text-xl font-bold text-text tracking-tight mb-2">
+            <h2 className="text-lg sm:text-xl font-bold text-text tracking-tight mb-2">
               {experiment.title}
             </h2>
-            <p className="text-text2 text-sm leading-relaxed mb-5">
+            <p className="text-text2 text-sm leading-relaxed mb-4 sm:mb-5">
               {experiment.description}
             </p>
             

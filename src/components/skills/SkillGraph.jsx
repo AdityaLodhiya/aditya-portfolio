@@ -277,13 +277,15 @@ export default function SkillGraph({
     const { minX, maxX, minY, maxY } = nodeBounds
     const graphW = maxX - minX
     const graphH = maxY - minY
-    const PAD = 60
+    const isMobile = width < 768
+    const PAD = isMobile ? 24 : 60
     const rawScale = Math.min(
       (width - PAD * 2) / (graphW + PAD * 2),
       (height - PAD * 2) / (graphH + PAD * 2),
     )
-    // Allow zooming as far out as needed to fill viewport; cap at 1.0
-    const scale = Math.max(Math.min(rawScale, 1.0), 0.7)
+    // Allow zooming as far out as needed to fit mobile screens comfortably
+    const minScale = isMobile ? 0.22 : 0.45
+    const scale = Math.max(Math.min(rawScale, 1.0), minScale)
     const gcx = (minX + maxX) / 2
     const gcy = (minY + maxY) / 2
     setVp({
@@ -345,7 +347,7 @@ export default function SkillGraph({
     }))
   }, [vp.scale])
 
-  // ── Pan ───────────────────────────────────────────────────────────────────
+  // ── Pan & Touch ─────────────────────────────────────────────────────────
   const onMouseDown = e => {
     if (e.target.tagName === 'svg' || e.target.tagName === 'rect') {
       setDragging(true)
@@ -357,6 +359,40 @@ export default function SkillGraph({
     setVp(p => ({ ...p, x: e.clientX - dragOrigin.x, y: e.clientY - dragOrigin.y }))
   }
   const onMouseUp = () => setDragging(false)
+
+  // Touch gesture support
+  const touchDataRef = useRef({ dist: 0, scale: 1 })
+  const onTouchStart = e => {
+    if (e.touches.length === 1) {
+      const t = e.touches[0]
+      setDragging(true)
+      setDragOrigin({ x: t.clientX - vp.x, y: t.clientY - vp.y })
+    } else if (e.touches.length === 2) {
+      const t1 = e.touches[0]
+      const t2 = e.touches[1]
+      const dist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY)
+      touchDataRef.current = { dist, scale: vp.scale }
+    }
+  }
+
+  const onTouchMove = e => {
+    if (e.touches.length === 1 && dragging) {
+      const t = e.touches[0]
+      setVp(p => ({ ...p, x: t.clientX - dragOrigin.x, y: t.clientY - dragOrigin.y }))
+    } else if (e.touches.length === 2 && touchDataRef.current.dist > 0) {
+      const t1 = e.touches[0]
+      const t2 = e.touches[1]
+      const newDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY)
+      const factor = newDist / touchDataRef.current.dist
+      const newScale = Math.min(Math.max(touchDataRef.current.scale * factor, 0.12), 5)
+      setVp(p => ({ ...p, scale: newScale }))
+    }
+  }
+
+  const onTouchEnd = () => {
+    setDragging(false)
+    touchDataRef.current.dist = 0
+  }
 
   // ── Reset view ────────────────────────────────────────────────────────────
   const resetView = fitToBounds
@@ -386,8 +422,9 @@ export default function SkillGraph({
     <div className="flex flex-col" style={{ height: '100%', overflow: 'hidden' }}>
 
       {/* ══ TOOLBAR ══════════════════════════════════════════════════════════ */}
+      {/* Desktop Toolbar */}
       <div
-        className="flex items-stretch shrink-0 border-b border-border"
+        className="hidden md:flex items-stretch shrink-0 border-b border-border"
         style={{ background: '#0d0d0d' }}
       >
         {/* 02 SKILLS */}
@@ -449,6 +486,54 @@ export default function SkillGraph({
         </div>
       </div>
 
+      {/* Mobile Toolbar (Stacked & scrollable) */}
+      <div
+        className="flex md:hidden flex-col shrink-0 border-b border-border divide-y divide-border2"
+        style={{ background: '#0d0d0d' }}
+      >
+        <div className="flex items-center justify-between px-3 py-2 gap-2">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="font-mono text-accent text-xs font-bold">02</span>
+            <span className="font-mono text-text text-xs font-bold tracking-wider">SKILLS</span>
+            <span className="font-mono text-[10px] text-accent px-1.5 py-0.5 bg-accent/10 rounded">
+              {stats.skills}
+            </span>
+          </div>
+          <div className="flex-1 max-w-[170px]">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={e => onSearchChange?.(e.target.value)}
+              className="w-full font-mono text-xs bg-surface2 border border-border2 text-text2 px-2.5 py-1 focus:border-accent focus:outline-none placeholder:text-text3/60 rounded-sm"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-1.5 px-3 py-1.5 overflow-x-auto no-scrollbar">
+          {CAT_ORDER.map((cat, i) => {
+            const active = selectedCategory === cat
+            return (
+              <button
+                key={cat}
+                onClick={() => { onCategoryChange?.(active ? '' : cat); clearSelection() }}
+                className="flex-shrink-0 font-mono text-[10px] tracking-wider px-2 py-1 border transition-all duration-150 whitespace-nowrap rounded-sm"
+                style={{
+                  borderColor: active ? '#00ff9d' : '#2a2a2a',
+                  color: active ? '#00ff9d' : '#777777',
+                  background: active ? 'rgba(0,255,157,0.08)' : '#111111',
+                }}
+              >
+                <span style={{ color: active ? '#00cc7d' : '#555555' }} className="mr-1 font-bold">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                {CAT_ABBR[cat] ?? cat}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* ══ GRAPH CANVAS ═════════════════════════════════════════════════════ */}
       <div
         ref={containerRef}
@@ -471,12 +556,15 @@ export default function SkillGraph({
 
         {/* Main SVG */}
         <svg
-          style={{ width: '100%', height: '100%', cursor: dragging ? 'grabbing' : 'grab' }}
+          style={{ width: '100%', height: '100%', cursor: dragging ? 'grabbing' : 'grab', touchAction: 'none' }}
           onWheel={handleWheel}
           onMouseDown={onMouseDown}
           onMouseMove={onMouseMove}
           onMouseUp={onMouseUp}
           onMouseLeave={onMouseUp}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
           onClick={clearSelection}
         >
           <g transform={`translate(${vp.x},${vp.y}) scale(${vp.scale})`}>
@@ -650,18 +738,18 @@ export default function SkillGraph({
         </svg>
 
         {/* ── Zoom controls (bottom-left) ───────────────────────────────── */}
-        <div className="absolute bottom-5 left-5 flex flex-col gap-1">
+        <div className="absolute bottom-4 left-4 sm:bottom-5 sm:left-5 flex flex-col gap-1.5 z-20">
           <button
-            onClick={() => setVp(p => ({ ...p, scale: Math.min(p.scale * 1.2, 5) }))}
-            className="w-7 h-7 flex items-center justify-center border border-border2 font-mono text-text3 text-xs hover:border-accent hover:text-accent transition-colors"
+            onClick={() => setVp(p => ({ ...p, scale: Math.min(p.scale * 1.25, 5) }))}
+            className="w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center border border-border2 font-mono text-text2 text-sm sm:text-xs hover:border-accent hover:text-accent transition-colors rounded-sm"
             style={{ background: 'rgba(10,10,10,0.92)' }}
             aria-label="Zoom in"
           >
             +
           </button>
           <button
-            onClick={() => setVp(p => ({ ...p, scale: Math.max(p.scale * 0.83, 0.12) }))}
-            className="w-7 h-7 flex items-center justify-center border border-border2 font-mono text-text3 text-xs hover:border-accent hover:text-accent transition-colors"
+            onClick={() => setVp(p => ({ ...p, scale: Math.max(p.scale * 0.8, 0.12) }))}
+            className="w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center border border-border2 font-mono text-text2 text-sm sm:text-xs hover:border-accent hover:text-accent transition-colors rounded-sm"
             style={{ background: 'rgba(10,10,10,0.92)' }}
             aria-label="Zoom out"
           >
@@ -669,7 +757,7 @@ export default function SkillGraph({
           </button>
           <button
             onClick={resetView}
-            className="w-7 h-7 flex items-center justify-center border border-border2 font-mono text-text3 text-xs hover:border-accent hover:text-accent transition-colors"
+            className="w-9 h-9 sm:w-7 sm:h-7 flex items-center justify-center border border-border2 font-mono text-text2 text-sm sm:text-xs hover:border-accent hover:text-accent transition-colors rounded-sm"
             style={{ background: 'rgba(10,10,10,0.92)' }}
             aria-label="Reset zoom"
           >
@@ -677,10 +765,10 @@ export default function SkillGraph({
           </button>
         </div>
 
-        {/* ── Legend (bottom-right, hidden when inspector open) ────────── */}
+        {/* ── Legend (bottom-right, hidden on very small screens or when inspector open) ────────── */}
         {!inspectorOpen && (
           <div
-            className="absolute bottom-5 right-5 flex items-center gap-5 px-3 py-2 border border-border"
+            className="hidden sm:flex absolute bottom-5 right-5 items-center gap-5 px-3 py-2 border border-border"
             style={{ background: 'rgba(10,10,10,0.92)' }}
           >
             {/* SKILL – cool blue-gray */}
@@ -701,7 +789,7 @@ export default function SkillGraph({
           </div>
         )}
 
-        {/* ── Inspector Panel ───────────────────────────────────────────── */}
+        {/* ── Inspector Panel (Mobile Bottom Sheet / Desktop Right Sidebar) ──────────────── */}
         {selectedSkill && (
           <SkillInspector
             key={selectedSkill.id}
@@ -735,21 +823,28 @@ function SkillInspector({ skillNode, projectNodes, onClose }) {
 
   return (
     <div
-      className="sg-inspector absolute top-0 right-0 bottom-0 flex flex-col border-l border-border overflow-y-auto"
-      style={{ width: 288, background: 'rgba(10,10,10,0.98)' }}
+      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[78vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
+      style={{ background: 'rgba(10,10,10,0.98)' }}
       onClick={e => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
+      {/* Mobile drag handle */}
+      <div className="w-10 h-1 rounded-full bg-border2 mx-auto mt-2.5 mb-1 md:hidden shrink-0" />
+
+      <div className="flex items-center justify-between px-5 py-3 sm:py-4 border-b border-border shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
           <span className="font-mono text-[9px] text-text3 tracking-[0.18em] uppercase">Skill Node</span>
         </div>
-        <button onClick={onClose} className="font-mono text-text3 text-xs hover:text-text transition-colors w-6 h-6 flex items-center justify-center">
+        <button
+          onClick={onClose}
+          className="font-mono text-text3 text-sm hover:text-text transition-colors w-9 h-9 sm:w-6 sm:h-6 flex items-center justify-center rounded-sm"
+          aria-label="Close inspector"
+        >
           ✕
         </button>
       </div>
       <div className="h-px bg-accent shrink-0" />
-      <div className="px-5 py-5 flex-1">
+      <div className="px-5 py-4 sm:py-5 flex-1">
         <h2 className="font-mono text-text font-bold tracking-[0.1em] uppercase text-[15px] mb-1 leading-tight">
           {skillNode.name}
         </h2>
@@ -766,7 +861,7 @@ function SkillInspector({ skillNode, projectNodes, onClose }) {
         <p className="font-mono text-[8px] text-text3 tracking-[0.2em] uppercase mb-3">
           Used in {usedIn.length} project{usedIn.length !== 1 ? 's' : ''}
         </p>
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 pb-4">
           {usedIn.map(p => <ProjectEntry key={p.id} project={p} />)}
           {usedIn.length === 0 && (
             <p className="font-mono text-text3 text-[10px]">No linked projects.</p>
@@ -804,24 +899,31 @@ function ProjectInspector({ projectNode, skillNodes, onClose }) {
 
   return (
     <div
-      className="sg-inspector absolute top-0 right-0 bottom-0 flex flex-col border-l border-border overflow-y-auto"
-      style={{ width: 288, background: 'rgba(10,10,10,0.98)' }}
+      className="sg-inspector animate-sheet-up fixed inset-x-0 bottom-0 max-h-[78vh] md:max-h-none md:inset-x-auto md:top-0 md:right-0 md:bottom-0 md:w-72 flex flex-col border-t md:border-t-0 md:border-l border-border rounded-t-xl md:rounded-none z-50 overflow-y-auto shadow-2xl"
+      style={{ background: 'rgba(10,10,10,0.98)' }}
       onClick={e => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
+      {/* Mobile drag handle */}
+      <div className="w-10 h-1 rounded-full bg-border2 mx-auto mt-2.5 mb-1 md:hidden shrink-0" />
+
+      <div className="flex items-center justify-between px-5 py-3 sm:py-4 border-b border-border shrink-0">
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-accent inline-block" />
           <span className="font-mono text-[9px] text-text3 tracking-[0.18em] uppercase">
             {projectNode.isMission ? 'Mission' : 'Lab'} Node
           </span>
         </div>
-        <button onClick={onClose} className="font-mono text-text3 text-xs hover:text-text transition-colors w-6 h-6 flex items-center justify-center">
+        <button
+          onClick={onClose}
+          className="font-mono text-text3 text-sm hover:text-text transition-colors w-9 h-9 sm:w-6 sm:h-6 flex items-center justify-center rounded-sm"
+          aria-label="Close inspector"
+        >
           ✕
         </button>
       </div>
       <div className="h-px bg-accent shrink-0" />
 
-      <div className="px-5 py-5 flex-1">
+      <div className="px-5 py-4 sm:py-5 flex-1">
         {/* Label (MISSION // 01) */}
         <p className="font-mono text-[9px] text-text3 tracking-[0.2em] uppercase mb-1">
           {projectNode.label}
